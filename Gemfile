@@ -100,7 +100,7 @@ gem 'stackprof'
 gem 'oj'
 
 # Use rack-cors to allow API requests
-gem 'rack-cors', '2.0.1'
+gem 'rack-cors', '2.0.2'
 
 # Use haml-rails for templating
 gem 'haml-rails'
