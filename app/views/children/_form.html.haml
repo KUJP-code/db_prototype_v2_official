@@ -136,11 +136,13 @@
           = f.select :photos, child_photos, {},
                      { class: 'form-select', required: true }
 
-        - if current_user.staff? || (current_user.customer? && @child.new_record?)
+        - if current_user.staff?
           %div
             = f.check_box :first_seasonal, { class: 'form-check-input' }
             = f.label :first_seasonal, t('.first_seasonal'),
                       class: 'form-check-label'
+        - elsif current_user.customer? && @child.new_record?
+          = f.hidden_field :first_seasonal, value: true
 
       = f.submit t('.reg_child'),
                  class: 'btn btn-primary',
