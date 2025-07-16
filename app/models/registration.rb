@@ -25,11 +25,33 @@ class Registration < ApplicationRecord
   # Set scopes for registerable type
   scope :slot_registrations, -> { where(registerable_type: 'TimeSlot') }
   scope :option_registrations, -> { where(registerable_type: 'Option') }
+  scope :merch_registrations, -> { where(registerable_type: 'MerchItem')}
 
   def slot_registration?
     return true if registerable_type == 'TimeSlot'
 
     false
+  end
+
+  def merch_registration?
+    registerable_type == 'MerchItem'
+  end
+
+  #  monkey patch this to cover for old delegate event/school to registerable calls.
+  def event
+    if merch_registration?
+      invoice.event
+    else
+      registerable.event
+    end
+  end
+
+  def school
+    if merch_registration?
+      invoice.event.school
+    else
+      registerable.school
+    end
   end
 
   private
