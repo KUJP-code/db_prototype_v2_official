@@ -17,6 +17,8 @@ class Event < ApplicationRecord
                                  optional: true
 
   has_many :time_slots, dependent: :destroy
+  has_many :event_merch_items, dependent: :destroy
+  has_many :merch_items, through: :event_merch_items
   accepts_nested_attributes_for :time_slots, allow_destroy: true,
                                              reject_if: :all_blank
   has_many :options, as: :optionable,
