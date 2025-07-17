@@ -26,8 +26,8 @@ class MerchItem < ApplicationRecord
     metadata['description']
   end
 
-  def description=(text)
+  def description=(value)
     self.metadata ||= {}
-    self.metadata['description'] = text
+    self.metadata['description'] = value
   end
 end
