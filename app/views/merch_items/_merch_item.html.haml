@@ -1,0 +1,18 @@
+.card.justify-content-between
+  %h3= merch_item.name
+
+  = render 'shared/picture_for', resource: merch_item
+
+  - if merch_item.description.present?
+    %p.text-muted= merch_item.description
+
+  - if merch_item.closed?
+    %span.badge.bg-danger= t('.sold_out')
+  - elsif merch_item.stock
+    %span.badge.bg-info= "#{merch_item.stock} in stock"
+
+  .d-grid.gap-2.w-100.mt-2
+    - if current_user.admin?
+      = link_to 'Edit Merch Item',
+                edit_merch_item_path(merch_item),
+                class: 'btn btn-info'

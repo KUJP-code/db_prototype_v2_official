@@ -1,0 +1,8 @@
+%main#merch_items_index
+  %h1= t('.available_merch')
+
+  - if current_user.admin?
+    = link_to 'Add New Merch Item', new_merch_item_path, class: 'btn btn-primary mb-3'
+
+  .row.row-cols-sm-5.justify-content-evenly.gap-3.p-3
+    = render partial: 'merch_items/merch_item', collection: @merch_items

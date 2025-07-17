@@ -1,0 +1,45 @@
+= form_with model: merch_item, local: true do |f|
+  - if merch_item.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(merch_item.errors.count, 'error')} prohibited this item from being saved:"
+      %ul
+        - merch_item.errors.full_messages.each do |message|
+          %li= message
+
+  .mb-3
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+
+  .mb-3
+    = f.label :description
+    = f.text_area :description, class: 'form-control'
+
+  .mb-3
+    = f.label :cost
+    = f.number_field :cost, class: 'form-control'
+
+  .mb-3
+    = f.label :event_name, 'Add to Event Name (case sensitive)'
+    = f.text_field :event_name, class: 'form-control'
+
+  .mb-3
+    = f.label :stock
+    = f.number_field :stock, class: 'form-control'
+
+  .mb-3
+    = f.label :close_at
+    = f.datetime_field :close_at, class: 'form-control'
+
+  .mb-3
+    = f.label :image
+    = f.file_field :image, direct_upload: true, class: 'form-control'
+
+  .mb-3
+    = f.label :avif
+    = f.file_field :avif, direct_upload: true, class: 'form-control'
+
+  .form-check.mb-3
+    = f.check_box :closed, class: 'form-check-input'
+    = f.label :closed, class: 'form-check-label'
+
+  = f.submit 'Save Merch Item', class: 'btn btn-primary'
