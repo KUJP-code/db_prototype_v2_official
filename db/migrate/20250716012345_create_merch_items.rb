@@ -7,6 +7,7 @@ class CreateMerchItems < ActiveRecord::Migration[7.1]
       t.string :sku
       t.boolean :closed, default: false
       t.datetime :close_at
+      t.string :event_name
       t.jsonb :metadata, default: {}
 
       t.timestamps

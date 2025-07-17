@@ -12,7 +12,6 @@
 
 ActiveRecord::Schema[7.1].define(version: 2025_07_16_020132) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -132,7 +131,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_16_020132) do
     t.bigint "member_prices_id"
     t.bigint "non_member_prices_id"
     t.boolean "released", default: true
-    t.date "early_bird_date", default: "2024-07-28"
+    t.date "early_bird_date", default: "2025-07-17"
     t.integer "early_bird_discount", default: 0
     t.index ["member_prices_id"], name: "index_events_on_member_prices_id"
     t.index ["non_member_prices_id"], name: "index_events_on_non_member_prices_id"
@@ -204,6 +203,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_16_020132) do
     t.string "sku"
     t.boolean "closed", default: false
     t.datetime "close_at"
+    t.string "event_name"
     t.jsonb "metadata", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -240,7 +240,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_16_020132) do
 
   create_table "qr_codes", force: :cascade do |t|
     t.string "name"
-    t.integer "usage_count"
+    t.integer "usage_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -309,10 +309,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_16_020132) do
   create_table "setsumeikais", force: :cascade do |t|
     t.datetime "start"
     t.integer "attendance_limit"
+    t.integer "inquiries_count", default: 0
     t.bigint "school_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "inquiries_count", default: 0
     t.date "release_date"
     t.datetime "close_at"
     t.index ["school_id"], name: "index_setsumeikais_on_school_id"
