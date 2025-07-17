@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       resources :events, except: %i[destroy]
       resources :invoices, except: %i[edit]
       resources :inquiries, except: %i[show]
+      resources :merch_items
       resources :price_lists, except: %i[destroy show]
       resources :schools, except: [:index]
       resources :setsumeikais
