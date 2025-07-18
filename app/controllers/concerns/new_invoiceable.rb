@@ -27,6 +27,12 @@ module NewInvoiceable
       return unless @all_invoices.empty? || @all_invoices.all?(&:in_ss)
 
       @all_invoices = @all_invoices.to_a + [build_temp_invoice(child, event)]
+
+      # Merch logic
+      @registered_merch = @all_invoices
+        .flat_map(&:registrations)
+        .select { |reg| reg.registerable_type == 'MerchItem' }
+        .map(&:registerable)
     end
 
     def get_event_data(event, child, siblings)
@@ -38,6 +44,11 @@ module NewInvoiceable
       @siblings_event_cost =
         Invoice.where(child: siblings, event_id: event.id)
                .sum(:total_cost)
+      # merch logic
+      @available_merch = MerchItem.where(event_name: event.name).reject(&:closed?)
+      @unregistered_merch = @available_merch - (@registered_merch || [])
+
+
     end
 
     def old_event?(event)
