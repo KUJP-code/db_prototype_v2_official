@@ -1,0 +1,39 @@
+-# locals: (merch_item:, child:, registrations:)
+
+:ruby
+  registered = registrations.any? do |reg|
+    reg.registerable_type == 'MerchItem' && reg.registerable_id == merch_item.id
+  end
+
+.card.d-flex.flex-row.flex-nowrap.bg-white
+  .d-flex.flex-column
+    = render 'shared/picture_for', resource: merch_item
+
+  .d-grid.gap-3.w-50
+    .w-100{ data: { controller: 'popup',
+                    action: 'register:toggle->popup#listen' } }
+      %div{ class: 'add_reg w-100 form-check form-switch p-0 d-flex ' \
+                   'flex-column justify-content-center align-items-center gap-3',
+            data: { controller: 'register',
+                    'register-id-value': merch_item.id,
+                    'register-type-value': 'MerchItem',
+                    'register-name-value': merch_item.name.tr(' ', '_'),
+                    'register-child-value': child.id,
+                    'register-modifier-value': merch_item.cost } }
+
+        %label{ for: "m_merch#{merch_item.id}",
+                class: 'fw-bold fs-5 form-check-label',
+                data: { 'register-target': 'name' } }
+          = merch_item.name
+
+          - if merch_item.description.present?
+            %p.text-muted.small= merch_item.description
+          - if merch_item.cost.to_i.positive?
+            %p.text-muted.small= number_to_currency(merch_item.cost)
+
+        = check_box_tag "m_merch#{merch_item.id}",
+                        '', (true if registered),
+                        class: 'form-check-input m-0',
+                        data: { action: 'register#toggle',
+                                'register-target': 'button' },
+                        role: 'switch'
