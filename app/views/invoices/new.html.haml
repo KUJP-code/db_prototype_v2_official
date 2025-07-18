@@ -1,10 +1,13 @@
 :ruby
+  registrations =
+  @all_invoices.reduce([]) { |array, invoice| array + invoice.registrations }
+
   unregistered_slots = @event_slots - @registered_slots
   unregistered_slots = unregistered_slots.reverse
+  registered_merch = registrations.select { |r| r.registerable_type == 'MerchItem' }.map(&:registerable)
   active_invoice = @all_invoices.find { |i| i.in_ss == false }
 
-  registrations =
-    @all_invoices.reduce([]) { |array, invoice| array + invoice.registrations }
+
   opt_regs =
     registrations.select { |reg| reg.registerable_type == 'Option' }
   adjustments =
@@ -54,6 +57,11 @@
                collection: unregistered_slots,
                locals: { child: @child, registrations:, event: @event,
                          confirmed_slot_regs:, confirmed_opt_regs:, opt_regs: }
+      = render partial: 'merch_items/add_merch',
+              collection: @unregistered_merch,
+              as: :merch_item,
+              locals: { child: @child, registrations: @all_invoices.flat_map(&:registrations) }
+
 
   %details.w-100.border.rounded.mt-n3{ name: 'accordion' }
     %summary.bg-primary.rounded.p-3= t('.registered_slots')
@@ -62,6 +70,10 @@
                collection: @registered_slots,
                locals: { child: @child, registrations:, event: @event,
                          confirmed_slot_regs:, confirmed_opt_regs:, opt_regs: }
+      = render partial: 'merch_items/add_merch',
+              collection: @registered_merch,
+              as: :merch_item,
+              locals: { child: @child, registrations: @all_invoices.flat_map(&:registrations) }
 
   = render 'invoices/registration_page/price_footer',
            all_invoices: @all_invoices, child: @child, confirmed_opt_regs:,
