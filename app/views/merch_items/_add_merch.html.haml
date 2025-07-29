@@ -10,8 +10,7 @@
     = render 'shared/picture_for', resource: merch_item
 
   .d-grid.gap-3.w-50
-    .w-100{ data: { controller: 'popup',
-                    action: 'register:toggle->popup#listen' } }
+    .w-100
       %div{ class: 'add_reg w-100 form-check form-switch p-0 d-flex ' \
                    'flex-column justify-content-center align-items-center gap-3',
             data: { controller: 'register',

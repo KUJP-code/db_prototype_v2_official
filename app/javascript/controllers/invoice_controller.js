@@ -7,13 +7,18 @@ export default class extends Controller {
 		"optTemplate",
 		"optTarget",
 		"snackCount",
+		"merchTemplate",
 	];
 
 	add(child, cost, id, snack, type, modifier, name) {
-		const wrapper =
-			type === "TimeSlot"
-				? document.getElementById(`slot${id}`.concat(`child${child}`))
-				: document.getElementById(`opt${id}`.concat(`child${child}`));
+		let wrapper;
+		if (type === "TimeSlot") {
+			wrapper = document.getElementById(`slot${id}child${child}`);
+		} else if (type === "Option") {
+			wrapper = document.getElementById(`opt${id}child${child}`);
+		} else if (type === "MerchItem") {
+			wrapper = document.getElementById(`merch${id}child${child}`);
+		}
 
 		if (wrapper) {
 			// For existing registrations
@@ -29,21 +34,38 @@ export default class extends Controller {
 			if (type === "TimeSlot") {
 				const content = this.slotTemplateTarget.innerHTML
 					.replace(/REG_INDEX/g, new Date().getTime().toString())
-					.replace(/NEW_ID/g, `slot${id}`.concat(`child${child}`))
+					.replace(/NEW_ID/g, `slot${id}child${child}`)
 					.replace(/NEW_CLASS/, `child${child}`)
 					.replace(/NEW_CHILD_ID/g, child)
 					.replace(/NEW_REGISTERABLE_ID/g, id);
 				this.slotTargetTarget.insertAdjacentHTML("beforebegin", content);
-			} else {
+			} else if (type === "Option") {
 				const content = this.optTemplateTarget.innerHTML
 					.replace(/REG_INDEX/g, new Date().getTime().toString())
-					.replace(/NEW_ID/g, `opt${id}`.concat(`child${child}`))
+					.replace(/NEW_ID/g, `opt${id}child${child}`)
 					.replace(/NEW_CLASS/, `child${child}`)
 					.replace(/NEW_CHILD_ID/g, child)
 					.replace(/NEW_REGISTERABLE_ID/g, id)
 					.replace(/NEW_COST/g, cost);
 				this.optTargetTarget.insertAdjacentHTML("beforebegin", content);
+			} else if (type === "MerchItem") {
+				const content = this.merchTemplateTarget.innerHTML
+					.replace(/REG_INDEX/g, new Date().getTime().toString())
+					.replace(/NEW_CHILD_ID/g, child)
+					.replace(/NEW_REGISTERABLE_ID/g, id)
+					.replace(/NEW_COST/g, modifier);
+					console.log("MERCH CONTENT", content);
+				this.optTargetTarget.insertAdjacentHTML("beforebegin", content);
+
+				const insertedId = `merch${id}child${child}`;
+				const newNode = document.getElementById(insertedId);
+				if (newNode) {
+					const costNode = newNode.querySelector(".merch_cost");
+					if (costNode) costNode.classList.add("registered");
+				}
 			}
+
+
 		}
 
 		if (type === "TimeSlot") {
@@ -82,8 +104,9 @@ export default class extends Controller {
 		const snack = e.detail.snack;
 		const type = e.detail.type;
 
-		if (checked && (type === "TimeSlot" || type === "Option")) {
+		if (checked && ["TimeSlot", "Option", "MerchItem"].includes(type)) {
 			return this.add(child, cost, id, snack, type, modifier, name);
+		
 		} else if (checked && type === "Radio") {
 			return this.radio(child, cost, id, siblings, name);
 		} else {
@@ -105,10 +128,14 @@ export default class extends Controller {
 	}
 
 	remove(child, id, snack, type, name) {
-		const wrapper =
-			type === "TimeSlot"
-				? document.getElementById(`slot${id}child${child}`)
-				: document.getElementById(`opt${id}child${child}`);
+		let wrapper;
+		if (type === "TimeSlot") {
+			wrapper = document.getElementById(`slot${id}child${child}`);
+		} else if (type === "Option") {
+			wrapper = document.getElementById(`opt${id}child${child}`);
+		} else if (type === "MerchItem") {
+			wrapper = document.getElementById(`merch${id}child${child}`);
+		}
 
 		if (wrapper) {
 			if (wrapper.dataset.newRecord === "true") {

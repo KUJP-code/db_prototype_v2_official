@@ -47,6 +47,15 @@
           = opt_f.hidden_field :child_id
           = opt_f.hidden_field :registerable_id
           = opt_f.hidden_field :registerable_type
+      %p= @invoice.merch_regs.map(&:inspect).join("<br>").html_safe
+
+      .merch_regs
+        = f.fields_for :merch_regs do |merch_f|
+          = merch_f.hidden_field :_destroy
+          = merch_f.hidden_field :id
+          = merch_f.hidden_field :child_id
+          = merch_f.hidden_field :registerable_id
+          = merch_f.hidden_field :registerable_type
 
       - if @invoice.event.seasonal?
         %details.w-100

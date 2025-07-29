@@ -51,6 +51,19 @@
                                 <% end %>
                             </div>
 
+                            <div class="merch_regs">
+                            <%= f.fields_for :merch_regs do |merch_f| %>
+                                <div>
+                                <%= merch_f.hidden_field :_destroy %>
+                                <%= merch_f.hidden_field :id %>
+                                <%= merch_f.hidden_field :child_id %>
+                                <%= merch_f.hidden_field :registerable_id %>
+                                <%= merch_f.hidden_field :registerable_type %>
+                                </div>
+                            <% end %>
+                            </div>
+
+
                             <% if @invoice.event.seasonal? %>
                               <button class="btn btn-info mb-3" type="button"
                                       data-bs-toggle="collapse"

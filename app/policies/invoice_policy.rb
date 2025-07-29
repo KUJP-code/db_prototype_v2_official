@@ -54,6 +54,8 @@ class InvoicePolicy < ApplicationPolicy
                                  registerable_id registerable_type],
         opt_regs_attributes: %i[id child_id _destroy invoice_id
                                 registerable_id registerable_type],
+        merch_regs_attributes: %i[id child_id _destroy invoice_id
+                                  registerable_id registerable_type],
         coupons_attributes: [:code] }
     ]
     return always_permit if user.customer?

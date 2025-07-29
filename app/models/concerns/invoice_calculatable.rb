@@ -9,13 +9,17 @@ module InvoiceCalculatable
   included do
     def generate_data
       @data = { options: validated_options,
-                time_slots: validated_slots }
+                time_slots: validated_slots,
+                merch_items: validated_merch_items }
+
       @data[:num_regs] = @data[:time_slots].size
       calc_course_cost(@data[:time_slots])
       calc_option_cost(@data[:options])
+      calc_merch_cost(@data[:merch_items])
+
       adj_cost = calc_adjustments(@data[:num_regs])
 
-      calculated_cost = @data[:course_cost] + adj_cost + @data[:opt_cost]
+      calculated_cost = @data[:course_cost] + adj_cost + @data[:opt_cost] + @data[:merch_cost]
       calculated_cost = 0 if calculated_cost.negative?
 
       @data[:total_cost] = calculated_cost
@@ -36,5 +40,15 @@ module InvoiceCalculatable
                              .map(&:registerable_id)
 
     TimeSlot.where(id: valid_reg_ids).includes(:options)
+  end
+
+  def validated_merch_items
+    valid_reg_ids = merch_regs.reject(&:marked_for_destruction?)
+                              .map(&:registerable_id)
+    MerchItem.where(id: valid_reg_ids)
+  end
+
+  def calc_merch_cost(items)
+    @data[:merch_cost] = items.sum(&:cost)
   end
 end

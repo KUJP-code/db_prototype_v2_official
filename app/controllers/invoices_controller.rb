@@ -85,6 +85,7 @@ class InvoicesController < ApplicationController
     @ss_invoices = Invoice.where(event_id: @invoice.event_id, in_ss: true,
                                  child_id: @invoice.child_id)
     @new = params[:new] == 'true'
+    
 
     # Temp redirect while working on the registration page refactor
     render params[:rework] ? 'invoices/_confirm_rework' : 'invoices/confirm'

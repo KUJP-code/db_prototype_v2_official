@@ -12,6 +12,7 @@ export default class extends Controller {
 		"optCount",
 		"slotRegs",
 		"snackCount",
+		"merchCost",
 	];
 
 	static values = {
@@ -28,6 +29,13 @@ export default class extends Controller {
 		const optionCost = this.optCostTargets
 			.filter((cost) => cost.classList.contains("registered"))
 			.reduce((sum, option) => sum + Number.parseInt(option.innerHTML), 0);
+		const merchCostNodes = document.querySelectorAll(".merch_cost");
+		console.log("Found merchCostNodes:", merchCostNodes.length);
+
+		const merchCost = this.merchCostTargets.reduce(
+			(sum, node) => sum + Number.parseInt(node.innerHTML || "0"),
+			0
+		);
 
 		const adjustmentCost = this.calcAdjustments();
 
@@ -51,7 +59,7 @@ export default class extends Controller {
 		// Inner text set in the invoice controller if the time slot has a snack fee
 		const snackCost = Number.parseInt(this.snackCountTarget.innerText) * this.snackCostValue;
 		let finalCost =
-			optionCost + courseCost + adjustmentCost + snackCost + extraCost;
+			optionCost + courseCost + adjustmentCost + snackCost + merchCost + extraCost;
 		if (finalCost < 0) finalCost = 0;
 		this.finalCostTarget.innerHTML = `合計（税込）: ${finalCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}円`;
 		this.eventCostTarget.innerHTML = `${this.eventNameValue}の合計: ${(

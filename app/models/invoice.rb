@@ -14,6 +14,11 @@ class Invoice < ApplicationRecord
 
   has_many :registrations, dependent: :destroy
   accepts_nested_attributes_for :registrations
+  has_many :merch_regs, -> { where(registerable_type: 'MerchItem') },
+           class_name: 'Registration',
+           inverse_of: :invoice,
+           dependent: :destroy
+  accepts_nested_attributes_for :merch_regs, allow_destroy: true
   has_many :slot_regs, -> { where(registerable_type: 'TimeSlot') },
            class_name: 'Registration',
            dependent: :destroy,
@@ -23,6 +28,7 @@ class Invoice < ApplicationRecord
            class_name: 'Registration',
            dependent: :destroy,
            inverse_of: :invoice
+
   accepts_nested_attributes_for :opt_regs, allow_destroy: true,
                                            reject_if: :orphan_option?
   has_many :time_slots, through: :slot_regs,
@@ -31,6 +37,11 @@ class Invoice < ApplicationRecord
   has_many :options, through: :opt_regs,
                      source: :registerable,
                      source_type: 'Option'
+
+  has_many :merch_items, through: :merch_regs,
+                         source: :registerable,
+                         source_type: 'MerchItem'
+
   has_many :adjustments, dependent: :destroy
   accepts_nested_attributes_for :adjustments, allow_destroy: true
   has_many :coupons, as: :couponable,

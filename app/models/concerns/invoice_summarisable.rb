@@ -10,6 +10,7 @@ module InvoiceSummarisable
       "#{header}
        #{course_summary(data) if data[:num_regs].positive?}
        #{option_summary(data) if data[:options].any?}
+       #{merch_summary(data) if data[:merch_items].any?}
        #{adjustment_summary if adjustments.size.positive?}
        #{slot_details(data[:time_slots])}
        <h2 id='final_cost' class='fw-semibold text-start'>
@@ -68,6 +69,23 @@ module InvoiceSummarisable
        <p>#{yenify(data[:opt_cost])} (#{data[:options].size}オプション)<p>
           #{per_name_summary(data[:options])}\n
      </div>"
+  end
+
+  def merch_summary(data)
+    return '' unless data[:merch_items].any?
+
+    per_name_costs = data[:merch_items].group(:name).sum(:cost)
+    per_name_counts = data[:merch_items].group(:name).count
+
+    summary_lines = per_name_counts.map do |name, count|
+      "<p>- #{name} x #{count}: #{yenify(per_name_costs[name])}</p>"
+    end.join
+
+    "<div class='d-flex flex-column align-items-start gap-1'>
+      <h4 class='fw-semibold'>グッズ:</h4>
+      <p>#{yenify(data[:merch_cost])} (#{data[:merch_items].size}点)</p>
+      #{summary_lines}
+    </div>"
   end
 
   def per_name_summary(opts)

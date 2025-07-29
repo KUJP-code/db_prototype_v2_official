@@ -80,6 +80,26 @@
         - unless f.object.in_ss
           %div{ 'data-invoice-target': 'optTarget' }
 
+      .merch_regs.hidden{ data: { 'price-target': 'merchRegs' } }
+        = f.fields_for :merch_regs do |merch_f|
+          :ruby
+            merch_id = "merch#{merch_f.object.registerable_id}child#{merch_f.object.child_id}"
+            merch = merch_items.find { |m| m.id == merch_f.object.registerable_id }
+            merch_cost = merch ? merch.cost : 0
+
+          %div{ class: "merch_reg child#{merch_f.object.child_id}",
+                id: merch_id }
+            = merch_f.hidden_field :_destroy, value: 0
+            = merch_f.hidden_field :id
+            = merch_f.hidden_field :child_id
+            = merch_f.hidden_field :registerable_id
+            = merch_f.hidden_field :registerable_type
+            .merch_cost.hidden.registered{ data: { 'price-target': 'merchCost' } }
+              = merch_cost
+
+        - unless f.object.in_ss
+          %div{ data: { 'invoice-target': 'merchTarget' } }
+
       %template{ 'data-invoice-target': 'slotTemplate' }
         = f.fields_for :slot_regs, Registration.new,
                        child_index: 'REG_INDEX' do |reg_f|
@@ -100,7 +120,19 @@
             .opt_cost.hidden.registered{ data: { 'price-target': 'optCost' } }
               NEW_COST
 
+      %template{ 'data-invoice-target': 'merchTemplate' }
+        = f.fields_for :merch_regs, Registration.new, child_index: 'REG_INDEX' do |reg_f|
+          .merch_reg.NEW_CLASS{ 'data-new-record': 'true', id: 'merchNEW_REGISTERABLE_IDchildNEW_CHILD_ID' }
+            = reg_f.hidden_field :child_id, value: 'NEW_CHILD_ID'
+            = reg_f.hidden_field :registerable_id, value: 'NEW_REGISTERABLE_ID'
+            = reg_f.hidden_field :registerable_type, value: 'MerchItem'
+            .merch_cost.hidden{ data: { 'price-target': 'merchCost' } }
+              NEW_COST
+
+
+
       - unless f.object.in_ss
+        
         = f.submit t('.confirm_invoice'),
                    class: 'btn btn-primary w-100',
                    data: { action: 'dialog#open',
