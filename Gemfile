@@ -93,7 +93,7 @@ gem 'haml-rails'
 gem 'pghero'
 
 # Lock rack version to avoid vulnerabilities
-gem 'rack', '3.0.9.1'
+gem 'rack', '3.1.20'
 
 # Lock nokogiri to avoid vulnerabilities
 gem 'nokogiri', '1.18.9'
