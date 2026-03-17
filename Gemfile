@@ -43,7 +43,7 @@ gem 'image_processing', '~> 1.2'
 gem 'ruby-vips', '~> 2.2.1'
 
 # Use Devise for authentication
-gem 'devise', '4.9.3'
+gem 'devise', '5.0.3'
 
 # Use Pundit for authorisation
 gem 'pundit', '2.3.1'
